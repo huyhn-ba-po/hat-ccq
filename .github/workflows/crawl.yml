@@ -1,0 +1,37 @@
+name: Daily Crawl
+
+on:
+  schedule:
+    # 00:00 UTC = 07:00 ICT hàng ngày
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Crawl fmarket
+        run: node crawler/crawl.js
+
+      - name: Commit fresh data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/
+          if git diff --staged --quiet; then
+            echo "No data changes — skip commit."
+          else
+            git commit -m "data: daily snapshot $(date -u +%Y-%m-%d)"
+            git push
+          fi
