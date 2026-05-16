@@ -1,0 +1,78 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#07090d" />
+      <stop offset="100%" stop-color="#121925" />
+    </linearGradient>
+    <radialGradient id="glow1" cx="15%" cy="20%" r="60%">
+      <stop offset="0%" stop-color="#7aa2ff" stop-opacity="0.25" />
+      <stop offset="100%" stop-color="#7aa2ff" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="glow2" cx="90%" cy="85%" r="50%">
+      <stop offset="0%" stop-color="#38d6c2" stop-opacity="0.2" />
+      <stop offset="100%" stop-color="#38d6c2" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#7aa2ff" />
+      <stop offset="100%" stop-color="#38d6c2" />
+    </linearGradient>
+    <linearGradient id="textGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#7aa2ff" />
+      <stop offset="50%" stop-color="#38d6c2" />
+      <stop offset="100%" stop-color="#f5c451" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background layers -->
+  <rect width="1200" height="630" fill="url(#bg)" />
+  <rect width="1200" height="630" fill="url(#glow1)" />
+  <rect width="1200" height="630" fill="url(#glow2)" />
+
+  <!-- Subtle grid pattern (top right decorative) -->
+  <g opacity="0.05" stroke="#7aa2ff" stroke-width="1">
+    <line x1="900" y1="50" x2="900" y2="200" />
+    <line x1="950" y1="50" x2="950" y2="200" />
+    <line x1="1000" y1="50" x2="1000" y2="200" />
+    <line x1="1050" y1="50" x2="1050" y2="200" />
+    <line x1="1100" y1="50" x2="1100" y2="200" />
+    <line x1="850" y1="100" x2="1150" y2="100" />
+    <line x1="850" y1="150" x2="1150" y2="150" />
+  </g>
+
+  <!-- Logo block (top-left, 120×120) -->
+  <g transform="translate(80, 80)">
+    <rect width="120" height="120" rx="28" fill="url(#logoGrad)" />
+    <g transform="translate(0, 0) scale(1.875)">
+      <path d="M32 34 C36 22, 46 18, 52 22 C49 32, 42 38, 32 34 Z" fill="#0a1a14" />
+      <path d="M32 38 C28 30, 20 28, 14 32 C17 40, 24 43, 32 38 Z" fill="#0a1a14" opacity="0.7" />
+      <path d="M32 50 Q32 42 32 36" stroke="#0a1a14" stroke-width="3" stroke-linecap="round" fill="none" />
+      <ellipse cx="32" cy="50" rx="5" ry="3" fill="#f5c451" />
+    </g>
+  </g>
+
+  <!-- Brand name -->
+  <text x="240" y="148" font-family="sans-serif" font-size="84" font-weight="800" fill="#e6edf7" letter-spacing="-2">Hạt</text>
+  <text x="240" y="188" font-family="sans-serif" font-size="20" font-weight="600" fill="#97a3b6" letter-spacing="6">CCQ CHO NGƯỜI MỚI</text>
+
+  <!-- Main tagline (huge, gradient) -->
+  <text x="80" y="350" font-family="sans-serif" font-size="68" font-weight="800" fill="#e6edf7" letter-spacing="-2">Đầu tư bắt đầu từ</text>
+  <text x="80" y="430" font-family="sans-serif" font-size="68" font-weight="800" fill="url(#textGrad)" letter-spacing="-2">một hạt nhỏ.</text>
+
+  <!-- Stats badges row -->
+  <g transform="translate(80, 480)">
+    <rect width="180" height="60" rx="14" fill="#7aa2ff" fill-opacity="0.12" stroke="#7aa2ff" stroke-opacity="0.35" stroke-width="1" />
+    <text x="90" y="40" text-anchor="middle" font-family="sans-serif" font-size="22" font-weight="700" fill="#7aa2ff">64 quỹ mở</text>
+
+    <rect x="200" width="200" height="60" rx="14" fill="#38d6c2" fill-opacity="0.12" stroke="#38d6c2" stroke-opacity="0.35" stroke-width="1" />
+    <text x="300" y="40" text-anchor="middle" font-family="sans-serif" font-size="22" font-weight="700" fill="#38d6c2">Từ 100.000đ</text>
+
+    <rect x="420" width="240" height="60" rx="14" fill="#f5c451" fill-opacity="0.12" stroke="#f5c451" stroke-opacity="0.35" stroke-width="1" />
+    <text x="540" y="40" text-anchor="middle" font-family="sans-serif" font-size="22" font-weight="700" fill="#f5c451">Cập nhật hàng ngày</text>
+  </g>
+
+  <!-- Domain pill (bottom-right) -->
+  <g transform="translate(880, 555)">
+    <rect width="260" height="40" rx="20" fill="#0a0f18" stroke="#2b3a52" stroke-width="1" />
+    <text x="130" y="28" text-anchor="middle" font-family="sans-serif" font-size="18" font-weight="600" fill="#e6edf7">hat-ccq.pages.dev</text>
+  </g>
+</svg>
