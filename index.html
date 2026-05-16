@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hạt — CCQ cho người mới — Đầu tư chứng chỉ quỹ từ 100k</title>
+    <meta
+      name="description"
+      content="Hướng dẫn đầu tư chứng chỉ quỹ Việt Nam cho người mới. Chỉ từ 100.000đ, dữ liệu 64 quỹ cập nhật hàng ngày, công cụ DCA và quiz chọn quỹ."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" type="image/svg+xml" href="./logo.svg" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div id="site-nav"></div>
+
+      <!-- HERO -->
+      <section class="hero">
+        <div>
+          <span class="hero-eyebrow">Bắt đầu chỉ từ 100.000đ</span>
+          <h1>
+            Đầu tư chứng chỉ quỹ — <span class="grad">đơn giản hơn bạn nghĩ.</span>
+          </h1>
+          <p class="lead">
+            Không cần biết phân tích cổ phiếu, không cần theo dõi bảng điện. Bạn góp tiền cho
+            chuyên gia quản lý, họ đầu tư hộ. Hướng dẫn từ con số 0, kèm dữ liệu 64 quỹ mở
+            cập nhật hàng ngày từ Fmarket.
+          </p>
+          <div class="hero-cta">
+            <a class="btn btn-primary" href="https://fmarket.vn" target="_blank" rel="noopener"
+              >Mở tài khoản Fmarket →</a
+            >
+            <a class="btn btn-ghost" href="./bai-viet/ccq-la-gi.html">Tìm hiểu CCQ là gì</a>
+          </div>
+          <div class="referral-box">
+            <div>
+              <div class="ref-label">Mã giới thiệu cho người mới</div>
+              <div class="ref-code">007F326665339</div>
+            </div>
+            <button class="ref-copy" onclick="copyReferral(this)">
+              <span class="copy-hint">Copy</span>
+            </button>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <div class="leaderboard-card">
+            <div class="lb-header">
+              <div class="lb-title">
+                <span class="lb-icon">🏆</span>
+                <div>
+                  <div class="lb-name">Top hiệu suất 6 tháng</div>
+                  <div class="lb-sub">Quỹ cổ phiếu · live data</div>
+                </div>
+              </div>
+              <div class="lb-pulse"><span></span> LIVE</div>
+            </div>
+            <div class="lb-rows" id="leaderboardRows">
+              <div class="lb-row skeleton"></div>
+              <div class="lb-row skeleton"></div>
+              <div class="lb-row skeleton"></div>
+              <div class="lb-row skeleton"></div>
+              <div class="lb-row skeleton"></div>
+            </div>
+            <div class="lb-footer">
+              <span><b id="heroTotal">64</b> quỹ mở</span>
+              <span>Cập nhật <b id="heroDate">—</b></span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TRUST STRIP -->
+      <div class="trust-strip">
+        <div class="trust-item">
+          <div class="num">64</div>
+          <div class="label">Quỹ mở được cấp phép</div>
+        </div>
+        <div class="trust-item">
+          <div class="num">26</div>
+          <div class="label">Công ty quản lý</div>
+        </div>
+        <div class="trust-item">
+          <div class="num">100k</div>
+          <div class="label">Số tiền tối thiểu</div>
+        </div>
+        <div class="trust-item">
+          <div class="num">T+3</div>
+          <div class="label">Chu kỳ rút tiền</div>
+        </div>
+      </div>
+
+      <!-- FEATURED ARTICLES -->
+      <div class="section-h">
+        <div>
+          <h2>Hướng dẫn cho người mới</h2>
+          <div class="section-sub">Đọc theo thứ tự, mỗi bài 5–7 phút.</div>
+        </div>
+        <a href="./bai-viet.html">Xem tất cả →</a>
+      </div>
+      <div class="article-grid" id="featuredArticles"></div>
+
+      <!-- TOP FUNDS -->
+      <div class="section-h">
+        <div>
+          <h2>Top quỹ đang hiệu suất tốt</h2>
+          <div class="section-sub">Sắp xếp theo hiệu suất 6 tháng gần nhất.</div>
+        </div>
+        <a href="./quy.html">Xem tất cả 64 quỹ →</a>
+      </div>
+      <div class="fund-mini-grid" id="topFunds"></div>
+
+      <!-- DCA TEASER -->
+      <div class="cta-block">
+        <div class="cta-text">
+          <h4>💡 Thử công cụ tính lãi kép</h4>
+          <p>
+            Bỏ 1 triệu mỗi tháng vào quỹ cổ phiếu trong 10 năm — bạn có bao nhiêu? Xem ngay.
+          </p>
+        </div>
+        <a class="btn btn-primary" href="./tinh-lai.html">Mở công cụ →</a>
+      </div>
+
+      <div id="site-footer"></div>
+    </div>
+    <script src="./partials.js"></script>
+    <script>
+      const FEATURED = [
+        {
+          slug: 'ccq-la-gi',
+          tag: 'Cơ bản',
+          title: 'Chứng chỉ quỹ là gì? Hướng dẫn từ A–Z',
+          desc: 'Hiểu CCQ trong 5 phút: ai phát hành, tiền của bạn đi đâu, vì sao an toàn hơn tự đầu tư cổ phiếu.',
+          time: '6 phút đọc',
+        },
+        {
+          slug: 'dau-tu-100k-bat-dau',
+          tag: 'Người mới',
+          title: 'Đầu tư 100.000đ — bắt đầu thế nào?',
+          desc: 'Quy trình 4 bước cụ thể: chọn quỹ, mở tài khoản, nạp tiền, lệnh mua đầu tiên.',
+          time: '7 phút đọc',
+        },
+        {
+          slug: 'quy-co-phieu-trai-phieu-can-bang',
+          tag: 'So sánh',
+          title: '3 loại quỹ: Cổ phiếu, Trái phiếu, Cân bằng — chọn loại nào?',
+          desc: 'Rủi ro và lợi nhuận kỳ vọng của từng loại, ai nên chọn cái nào.',
+          time: '8 phút đọc',
+        },
+      ];
+      const grid = document.getElementById('featuredArticles');
+      grid.innerHTML = FEATURED.map(
+        (a) => `
+        <a class="article-card" href="./bai-viet/${a.slug}.html">
+          <span class="tag">${a.tag}</span>
+          <h3>${a.title}</h3>
+          <p>${a.desc}</p>
+          <div class="meta"><span>${a.time}</span></div>
+        </a>`,
+      ).join('');
+
+      function fmtDate(s) {
+        if (!s) return '—';
+        const [y, m, d] = s.split('-');
+        return `${d}/${m}/${y}`;
+      }
+
+      fetch('./data/funds.json?_=' + Date.now())
+        .then((r) => r.json())
+        .then((data) => {
+          document.getElementById('heroTotal').textContent = data.total;
+          document.getElementById('heroDate').textContent = fmtDate(data.date);
+
+          const top = [...data.funds]
+            .filter((f) => f.nav6M != null && f.assetCode === 'STOCK')
+            .sort((a, b) => b.nav6M - a.nav6M);
+
+          // Leaderboard top 5
+          const top5 = top.slice(0, 5);
+          const max = top5[0]?.nav6M || 1;
+          document.getElementById('leaderboardRows').innerHTML = top5
+            .map(
+              (f, i) => `
+                <a class="lb-row" href="./fund.html?code=${encodeURIComponent(f.code)}">
+                  <span class="lb-rank">${i + 1}</span>
+                  <span class="lb-code">${f.code}</span>
+                  <span class="lb-bar"><span style="width:${(f.nav6M / max) * 100}%"></span></span>
+                  <span class="lb-pct">+${f.nav6M.toFixed(2)}%</span>
+                </a>`,
+            )
+            .join('');
+
+          // Featured funds section (below)
+          const featured = top.slice(0, 3);
+          document.getElementById('topFunds').innerHTML = featured
+            .map(
+              (f) => `
+              <a class="fund-mini-card" href="./fund.html?code=${encodeURIComponent(f.code)}">
+                <div class="head">
+                  <div class="code">${f.code}</div>
+                  <div class="return">+${f.nav6M.toFixed(2)}%</div>
+                </div>
+                <div class="meta-row">
+                  <span>${f.owner}</span>
+                  <span>6 tháng</span>
+                </div>
+                <div class="desc">${(f.name || '').slice(0, 90)}…</div>
+              </a>`,
+            )
+            .join('');
+        })
+        .catch(() => {});
+    </script>
+  </body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chứng Chỉ Quỹ — Toàn thị trường VN</title>
+    <link
+      rel="preconnect"
+      href="https://fonts.googleapis.com"
+    />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" type="image/svg+xml" href="./logo.svg" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div id="site-nav"></div>
+      <header class="site-header" style="border-top: none">
+        <div>
+          <h1 style="margin: 0; font-size: 22px">Toàn bộ chứng chỉ quỹ</h1>
+          <div class="brand-sub" style="margin-top: 4px">Dữ liệu fmarket.vn · cập nhật hàng ngày</div>
+        </div>
+        <div class="header-meta">
+          <div>Tổng quỹ: <b id="totalCount">—</b></div>
+          <div>Cập nhật: <b id="updatedAt">—</b></div>
+        </div>
+      </header>
+
+      <section class="stats">
+        <div class="stat-card">
+          <div class="stat-label">Quỹ cổ phiếu</div>
+          <div class="stat-value" id="cntStock">—</div>
+          <div class="stat-sub">Equity funds</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Quỹ trái phiếu</div>
+          <div class="stat-value" id="cntBond">—</div>
+          <div class="stat-sub">Bond funds</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Quỹ cân bằng</div>
+          <div class="stat-value" id="cntBalance">—</div>
+          <div class="stat-sub">Balanced funds</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Top 6M</div>
+          <div class="stat-value pos" id="topReturn">—</div>
+          <div class="stat-sub" id="topReturnCode">—</div>
+        </div>
+      </section>
+
+      <div class="toolbar">
+        <input
+          id="search"
+          class="search-input"
+          type="text"
+          placeholder="Tìm theo mã, tên quỹ hoặc công ty quản lý…"
+        />
+        <div class="chips" id="typeChips">
+          <span class="chip active" data-type="ALL">Tất cả</span>
+          <span class="chip" data-type="STOCK">Cổ phiếu</span>
+          <span class="chip" data-type="BOND">Trái phiếu</span>
+          <span class="chip" data-type="BALANCED">Cân bằng</span>
+        </div>
+        <select id="ownerSelect" class="select">
+          <option value="">Tất cả công ty QL</option>
+        </select>
+      </div>
+
+      <div class="table-wrap">
+        <div class="table-scroll">
+          <table id="fundsTable">
+            <thead>
+              <tr>
+                <th class="l sortable" data-sort="code">Mã / Tên quỹ</th>
+                <th class="l">Loại</th>
+                <th class="l">CTy QL</th>
+                <th class="sortable" data-sort="nav">NAV/CCQ</th>
+                <th class="sortable" data-sort="nav1M">1T</th>
+                <th class="sortable" data-sort="nav3M">3T</th>
+                <th class="sortable active" data-sort="nav6M">6T</th>
+                <th class="sortable" data-sort="nav12M">12T</th>
+                <th class="sortable" data-sort="nav36M">36T</th>
+                <th class="sortable" data-sort="navBeginning">Từ TL</th>
+                <th class="sortable" data-sort="managementFee">Phí QL</th>
+                <th>Min mua</th>
+                <th>Rủi ro</th>
+              </tr>
+            </thead>
+            <tbody id="fundsBody">
+              <tr>
+                <td colspan="13" class="loader">Đang tải dữ liệu…</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="site-footer"></div>
+    </div>
+    <script src="./partials.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>

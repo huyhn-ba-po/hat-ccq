@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tính lãi kép DCA — Hạt — CCQ cho người mới</title>
+    <meta
+      name="description"
+      content="Công cụ tính lãi kép khi đầu tư DCA chứng chỉ quỹ. Nhập số tiền/tháng và xem danh mục lớn lên ra sao theo thời gian."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" type="image/svg+xml" href="./logo.svg" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="./partials.js" defer></script>
+  </head>
+  <body>
+    <div class="container">
+      <div id="site-nav"></div>
+
+      <section style="padding: 20px 0 30px">
+        <h1 style="font-size: 32px; margin: 0 0 10px; letter-spacing: -0.02em">
+          🧮 Tính lãi kép DCA
+        </h1>
+        <p style="color: var(--text-2); font-size: 15px; max-width: 680px; line-height: 1.6">
+          Bỏ một số tiền cố định mỗi tháng vào quỹ trong N năm — bạn có bao nhiêu? Trượt
+          các thanh để xem ngay.
+        </p>
+      </section>
+
+      <div class="dca-shell">
+        <div class="dca-form">
+          <label>Số tiền mỗi tháng (đ)</label>
+          <input
+            type="text"
+            id="monthly"
+            value="1.000.000"
+            inputmode="numeric"
+            autocomplete="off"
+          />
+          <div class="quick-amounts">
+            <button type="button" data-amt="500000">500k</button>
+            <button type="button" data-amt="1000000">1tr</button>
+            <button type="button" data-amt="2000000">2tr</button>
+            <button type="button" data-amt="5000000">5tr</button>
+          </div>
+
+          <label>Số năm đầu tư <span id="yearsVal" class="range-val">10 năm</span></label>
+          <input type="range" id="years" min="1" max="30" value="10" />
+
+          <label>
+            Lợi nhuận kỳ vọng/năm
+            <span id="rateVal" class="range-val">12%</span>
+          </label>
+          <input type="range" id="rate" min="3" max="20" step="0.5" value="12" />
+
+          <button type="button" class="btn btn-primary" id="calcBtn" style="width: 100%; justify-content: center; margin-top: 20px">
+            Tính lãi →
+          </button>
+
+          <div style="margin-top: 16px; padding: 14px; background: var(--bg-2); border-radius: 8px; font-size: 12px; color: var(--text-2); line-height: 1.5">
+            <strong style="color: var(--accent)">Gợi ý lợi nhuận:</strong><br />
+            Quỹ trái phiếu: 6–8% · Cân bằng: 8–12% · Cổ phiếu: 12–18%
+          </div>
+        </div>
+
+        <div class="dca-result">
+          <div class="dca-summary">
+            <div class="stat">
+              <div class="label">Tổng bỏ vào</div>
+              <div class="value" id="totalIn">—</div>
+            </div>
+            <div class="stat">
+              <div class="label">Giá trị cuối kỳ</div>
+              <div class="value pos" id="finalValue">—</div>
+            </div>
+            <div class="stat">
+              <div class="label">Lời từ lãi kép</div>
+              <div class="value pos" id="profit">—</div>
+            </div>
+          </div>
+          <div style="height: 380px; position: relative">
+            <canvas id="growthChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="cta-block">
+        <div class="cta-text">
+          <h4>📈 Sốc với con số chưa?</h4>
+          <p>
+            Đó là sức mạnh của <em>lãi kép</em>. Mở Fmarket để bắt đầu lộ trình của bạn —
+            mã giới thiệu <b>007F326665339</b>.
+          </p>
+        </div>
+        <a class="btn btn-primary" href="https://fmarket.vn" target="_blank" rel="noopener">
+          Mở tài khoản Fmarket →
+        </a>
+      </div>
+
+      <article class="article-body" style="margin-top: 30px">
+        <h2>Công thức tính</h2>
+        <p>
+          Công cụ này tính lãi kép của một dòng tiền cố định (annuity). Công thức:
+        </p>
+        <blockquote>
+          FV = PMT × ((1 + r)<sup>n</sup> − 1) / r
+        </blockquote>
+        <p>
+          Trong đó: <code>PMT</code> = số tiền/tháng, <code>r</code> = lãi suất/tháng (lãi
+          suất năm / 12), <code>n</code> = số tháng. Lãi suất được tính lãi kép hàng tháng.
+        </p>
+        <p>
+          <strong>Lưu ý:</strong> Mô phỏng giả định lợi nhuận đều mỗi năm. Thực tế quỹ có
+          năm tốt năm xấu — nhưng trung bình dài hạn vẫn xấp xỉ con số kỳ vọng nếu bạn
+          chọn quỹ tốt và DCA đều đặn. Đọc bài
+          <a href="./bai-viet/dca-chien-luoc-dau-tu-deu-dan.html">DCA là gì</a> để hiểu vì
+          sao "trung bình" lại đúng.
+        </p>
+      </article>
+
+      <div id="site-footer"></div>
+    </div>
+
+    <script>
+      const FMT = new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 0 });
+      function fmt(v) {
+        if (v >= 1e9) return FMT.format(v / 1e9) + ' tỷ';
+        if (v >= 1e6) return FMT.format(v / 1e6) + ' tr';
+        return FMT.format(v);
+      }
+      const $ = (id) => document.getElementById(id);
+      let chart;
+
+      // Parse input "1.000.000" → 1000000
+      function parseAmount(s) {
+        return parseInt(String(s).replace(/[^\d]/g, ''), 10) || 0;
+      }
+      // Format raw input as user types: keep cursor at end
+      function formatAmount(n) {
+        if (!n) return '';
+        return FMT.format(n);
+      }
+
+      const monthlyEl = $('monthly');
+      monthlyEl.addEventListener('input', (e) => {
+        const n = parseAmount(e.target.value);
+        e.target.value = formatAmount(n);
+      });
+      // Quick-amount buttons
+      document.querySelectorAll('.quick-amounts button').forEach((b) => {
+        b.addEventListener('click', () => {
+          monthlyEl.value = formatAmount(+b.dataset.amt);
+          compute();
+        });
+      });
+
+      function compute() {
+        const monthly = parseAmount($('monthly').value);
+        const years = +$('years').value;
+        const rate = +$('rate').value;
+        $('yearsVal').textContent = years + ' năm';
+        $('rateVal').textContent = rate + '%';
+        if (monthly < 100000) {
+          alert('Số tiền tối thiểu 100.000đ/tháng');
+          return;
+        }
+
+        const r = rate / 100 / 12;
+        const months = years * 12;
+        const labels = [];
+        const totalInArr = [];
+        const valueArr = [];
+
+        let balance = 0;
+        let invested = 0;
+        for (let m = 0; m < months; m++) {
+          balance = balance * (1 + r) + monthly;
+          invested += monthly;
+          if (m % 12 === 11 || m === months - 1) {
+            const yr = Math.floor(m / 12) + 1;
+            labels.push('Năm ' + yr);
+            totalInArr.push(invested);
+            valueArr.push(Math.round(balance));
+          }
+        }
+
+        $('totalIn').textContent = fmt(invested);
+        $('finalValue').textContent = fmt(balance);
+        $('profit').textContent = '+' + fmt(balance - invested);
+
+        if (!chart) {
+          const ctx = $('growthChart').getContext('2d');
+          chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels,
+              datasets: [
+                {
+                  label: 'Tổng bỏ vào',
+                  data: totalInArr,
+                  borderColor: '#5b6577',
+                  backgroundColor: 'rgba(91, 101, 119, 0.1)',
+                  borderWidth: 2,
+                  borderDash: [4, 4],
+                  fill: false,
+                  tension: 0.2,
+                  pointRadius: 0,
+                  pointHoverRadius: 4,
+                },
+                {
+                  label: 'Giá trị danh mục',
+                  data: valueArr,
+                  borderColor: '#7aa2ff',
+                  backgroundColor: (ctx) => {
+                    const g = ctx.chart.ctx.createLinearGradient(0, 0, 0, 380);
+                    g.addColorStop(0, 'rgba(122, 162, 255, 0.45)');
+                    g.addColorStop(1, 'rgba(122, 162, 255, 0.02)');
+                    return g;
+                  },
+                  borderWidth: 3,
+                  fill: true,
+                  tension: 0.25,
+                  pointRadius: 0,
+                  pointHoverRadius: 5,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              interaction: { mode: 'index', intersect: false },
+              plugins: {
+                legend: {
+                  labels: { color: '#97a3b6', font: { size: 12 } },
+                },
+                tooltip: {
+                  backgroundColor: '#121925',
+                  borderColor: '#2b3a52',
+                  borderWidth: 1,
+                  callbacks: {
+                    label: (c) => c.dataset.label + ': ' + fmt(c.parsed.y) + ' đ',
+                  },
+                },
+              },
+              scales: {
+                x: {
+                  ticks: { color: '#5b6577' },
+                  grid: { color: 'rgba(31, 42, 58, 0.6)' },
+                },
+                y: {
+                  ticks: {
+                    color: '#5b6577',
+                    callback: (v) => fmt(v),
+                  },
+                  grid: { color: 'rgba(31, 42, 58, 0.6)' },
+                },
+              },
+            },
+          });
+        } else {
+          chart.data.labels = labels;
+          chart.data.datasets[0].data = totalInArr;
+          chart.data.datasets[1].data = valueArr;
+          chart.update();
+        }
+      }
+
+      // Sliders: chỉ update label live, không tự tính
+      ['years', 'rate'].forEach((id) => {
+        $(id).addEventListener('input', () => {
+          $('yearsVal').textContent = $('years').value + ' năm';
+          $('rateVal').textContent = $('rate').value + '%';
+        });
+      });
+
+      // Nhấn nút mới tính
+      $('calcBtn').addEventListener('click', compute);
+      // Enter trong ô số tiền cũng tính
+      monthlyEl.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') compute();
+      });
+
+      // Tính lần đầu khi load để có chart mẫu
+      compute();
+    </script>
+  </body>
+</html>

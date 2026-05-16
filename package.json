@@ -1,0 +1,13 @@
+{
+  "name": "chungchiquy-dashboard",
+  "version": "1.0.0",
+  "description": "Dashboard chứng chỉ quỹ Việt Nam — data từ fmarket.vn, cập nhật hàng ngày",
+  "private": true,
+  "scripts": {
+    "crawl": "node crawler/crawl.js",
+    "dev": "npx http-server -p 8080 -c-1 ."
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

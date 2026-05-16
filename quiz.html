@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quiz — Quỹ nào phù hợp với bạn? — Hạt — CCQ cho người mới</title>
+    <meta
+      name="description"
+      content="Trả lời 5 câu hỏi ngắn để biết loại quỹ mở nào phù hợp với mục tiêu và khẩu vị rủi ro của bạn."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" type="image/svg+xml" href="./logo.svg" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="./partials.js" defer></script>
+  </head>
+  <body>
+    <div class="container">
+      <div id="site-nav"></div>
+
+      <section style="padding: 20px 0 30px; text-align: center">
+        <h1 style="font-size: 32px; margin: 0 0 10px; letter-spacing: -0.02em">
+          🎯 Quỹ nào phù hợp với bạn?
+        </h1>
+        <p style="color: var(--text-2); font-size: 15px; max-width: 580px; margin: 0 auto">
+          Trả lời 5 câu, chúng tôi gợi ý loại quỹ phù hợp với mục tiêu và khẩu vị rủi ro
+          của bạn.
+        </p>
+      </section>
+
+      <div class="quiz-shell">
+        <div class="quiz-progress">
+          <div class="fill" id="progressFill" style="width: 20%"></div>
+        </div>
+
+        <div class="quiz-card" id="quizCard">
+          <!-- rendered by JS -->
+        </div>
+      </div>
+
+      <div id="site-footer"></div>
+    </div>
+
+    <script>
+      const QUESTIONS = [
+        {
+          q: '1. Bạn muốn đầu tư cho mục tiêu nào?',
+          options: [
+            { label: 'Mua nhà / cưới / con đi học trong 2–3 năm', score: { bond: 3, balanced: 1 } },
+            { label: 'Tích lũy dài hạn 5–10 năm (chưa rõ mục tiêu cụ thể)', score: { stock: 2, balanced: 2 } },
+            { label: 'Hưu trí, mục tiêu 15+ năm', score: { stock: 3, balanced: 1 } },
+            { label: 'Tiền dự phòng, có thể cần dùng bất kỳ lúc nào', score: { bond: 4 } },
+          ],
+        },
+        {
+          q: '2. Nếu danh mục của bạn giảm 20% trong 1 năm, bạn sẽ làm gì?',
+          options: [
+            { label: 'Bán hết để hạn chế lỗ', score: { bond: 4 } },
+            { label: 'Đứng nhìn, không làm gì cả', score: { balanced: 2, stock: 1 } },
+            { label: 'Tiếp tục DCA bình thường', score: { stock: 2, balanced: 1 } },
+            { label: 'Mua thêm vì giá đang rẻ', score: { stock: 3 } },
+          ],
+        },
+        {
+          q: '3. Tuổi của bạn?',
+          options: [
+            { label: 'Dưới 30', score: { stock: 3, balanced: 1 } },
+            { label: '30–40', score: { stock: 2, balanced: 2 } },
+            { label: '40–55', score: { balanced: 2, bond: 1 } },
+            { label: 'Trên 55', score: { bond: 3, balanced: 1 } },
+          ],
+        },
+        {
+          q: '4. Bạn có thể đầu tư bao lâu mà không cần rút tiền?',
+          options: [
+            { label: 'Dưới 1 năm', score: { bond: 4 } },
+            { label: '1–3 năm', score: { bond: 2, balanced: 2 } },
+            { label: '3–5 năm', score: { balanced: 2, stock: 1 } },
+            { label: 'Trên 5 năm', score: { stock: 3, balanced: 1 } },
+          ],
+        },
+        {
+          q: '5. Mong muốn lợi nhuận trung bình mỗi năm?',
+          options: [
+            { label: 'Trên lãi tiết kiệm chút (5–7%)', score: { bond: 3 } },
+            { label: 'Hơn tiết kiệm rõ rệt (8–12%)', score: { balanced: 3, stock: 1 } },
+            { label: 'Cao và chấp nhận biến động (12–18%)', score: { stock: 3 } },
+            { label: 'Không quan tâm, miễn không lỗ là được', score: { bond: 4 } },
+          ],
+        },
+      ];
+
+      const RESULTS = {
+        bond: {
+          label: 'Bond Investor',
+          title: 'Bạn phù hợp với quỹ trái phiếu',
+          desc: `Khẩu vị rủi ro của bạn ở mức thấp — ưu tiên bảo toàn vốn hơn lợi nhuận cao. Quỹ trái phiếu sẽ cho bạn lãi suất tốt hơn gửi tiết kiệm (6–8%/năm) với biến động cực thấp.`,
+          recommend: [
+            { code: 'MAFF', name: 'Mirae Asset Bond Fund', why: 'Trái phiếu doanh nghiệp top + chứng chỉ tiền gửi, ổn định cao.' },
+            { code: 'VFF', name: 'VinaCapital Bond Fund', why: 'Công ty quản lý uy tín, annualized ~7%/năm.' },
+            { code: 'TBLF', name: 'Techcom Bond Linked Fund', why: 'Lựa chọn đa dạng hóa khác công ty quản lý.' },
+          ],
+          alloc: '80% trái phiếu + 20% cân bằng (tăng dần lợi nhuận mà vẫn ổn định)',
+        },
+        balanced: {
+          label: 'Balanced Investor',
+          title: 'Bạn phù hợp với quỹ cân bằng',
+          desc: `Bạn muốn lợi nhuận cao hơn tiết kiệm rõ rệt nhưng không thoải mái với biến động mạnh. Quỹ cân bằng (50/50 cổ phiếu + trái phiếu) là lựa chọn vàng cho profile này — 8–12%/năm với biến động vừa phải.`,
+          recommend: [
+            { code: 'VIBF', name: 'Vietcombank Balanced Fund', why: 'VCBF backed by Vietcombank, uy tín cao.' },
+            { code: 'SSIEF', name: 'SSI Equity & Income Fund', why: 'Cân bằng linh hoạt, điều chỉnh tỷ trọng theo thị trường.' },
+            { code: 'VCAMBF', name: 'VietinCapital Balanced Fund', why: 'Lựa chọn thay thế của VCAM.' },
+          ],
+          alloc: '70% cân bằng + 20% cổ phiếu + 10% trái phiếu',
+        },
+        stock: {
+          label: 'Growth Investor',
+          title: 'Bạn phù hợp với quỹ cổ phiếu',
+          desc: `Bạn có thời gian dài và chấp nhận biến động ngắn hạn để có lợi nhuận cao dài hạn. Quỹ cổ phiếu là lựa chọn đúng — kỳ vọng 12–18%/năm nếu DCA đều đặn 5+ năm.`,
+          recommend: [
+            { code: 'VESAF', name: 'VinaCapital Equity Access Fund', why: 'Mid-cap chất lượng cao, annualized 3Y ~15%.' },
+            { code: 'DCBC', name: 'Dragon Capital Bluechip', why: 'Bluechip ổn định, biến động thấp hơn VESAF.' },
+            { code: 'VFMVF1', name: 'DCVFM Vietnam Selection Fund', why: 'Quỹ cổ phiếu lâu đời nhất Việt Nam.' },
+          ],
+          alloc: '60% cổ phiếu + 30% cổ phiếu phụ + 10% trái phiếu (giảm biến động)',
+        },
+      };
+
+      const state = { step: 0, scores: { bond: 0, balanced: 0, stock: 0 } };
+
+      function render() {
+        const card = document.getElementById('quizCard');
+        const total = QUESTIONS.length;
+
+        if (state.step < total) {
+          document.getElementById('progressFill').style.width =
+            ((state.step + 1) / (total + 1)) * 100 + '%';
+          const q = QUESTIONS[state.step];
+          card.innerHTML = `
+            <h2>${q.q}</h2>
+            <div class="quiz-options">
+              ${q.options
+                .map(
+                  (o, i) => `
+                <button class="quiz-option" data-i="${i}">${o.label}</button>
+              `,
+                )
+                .join('')}
+            </div>
+            <div style="margin-top: 18px; color: var(--text-3); font-size: 12px">
+              Câu ${state.step + 1}/${total}
+            </div>
+          `;
+          card.querySelectorAll('.quiz-option').forEach((btn) => {
+            btn.addEventListener('click', () => {
+              const i = +btn.dataset.i;
+              const score = q.options[i].score;
+              Object.keys(score).forEach((k) => (state.scores[k] += score[k]));
+              state.step++;
+              render();
+            });
+          });
+        } else {
+          // Result
+          document.getElementById('progressFill').style.width = '100%';
+          const winner = Object.entries(state.scores).sort((a, b) => b[1] - a[1])[0][0];
+          const r = RESULTS[winner];
+          const compareCodes = r.recommend.map((x) => x.code).join(',');
+          card.innerHTML = `
+            <div class="quiz-result">
+              <span class="result-badge">${r.label}</span>
+              <h2>${r.title}</h2>
+              <p style="color: var(--text-2); font-size: 15px; line-height: 1.6; margin: 0 auto 24px; max-width: 540px">${r.desc}</p>
+
+              <div style="background: var(--bg-2); border: 1px solid var(--border); border-radius: 12px; padding: 18px; margin: 20px 0; text-align: left">
+                <div style="font-size: 12px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px">3 quỹ gợi ý</div>
+                ${r.recommend
+                  .map(
+                    (q) => `
+                  <div style="display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border)">
+                    <div style="flex-shrink: 0; width: 80px"><a href="./fund.html?code=${q.code}" style="font-weight:700; color: var(--accent); font-size: 16px">${q.code}</a></div>
+                    <div style="flex: 1">
+                      <div style="font-weight: 600; font-size: 13px">${q.name}</div>
+                      <div style="color: var(--text-2); font-size: 12px; margin-top: 2px">${q.why}</div>
+                    </div>
+                  </div>
+                `,
+                  )
+                  .join('')}
+              </div>
+
+              <div style="background: rgba(245, 196, 81, 0.06); border: 1px dashed rgba(245, 196, 81, 0.3); border-radius: 10px; padding: 14px 18px; margin: 20px 0; font-size: 14px; color: var(--text-2); text-align: left">
+                <b style="color: var(--gold)">Phân bổ gợi ý:</b> ${r.alloc}
+              </div>
+
+              <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 24px">
+                <a class="btn btn-primary" href="./so-sanh.html?codes=${compareCodes}">So sánh 3 quỹ này →</a>
+                <a class="btn btn-ghost" href="https://fmarket.vn" target="_blank" rel="noopener">Mở Fmarket</a>
+                <button class="btn btn-ghost" onclick="restart()">Làm lại quiz</button>
+              </div>
+
+              <div style="margin-top: 24px; padding: 14px; background: var(--bg-2); border-radius: 8px; font-size: 13px; color: var(--text-2)">
+                💡 <b style="color:var(--gold)">Mẹo:</b> Khi đăng ký Fmarket, nhập mã giới thiệu
+                <code style="color: var(--gold); background: var(--bg-3); padding: 2px 6px; border-radius: 4px">007F326665339</code>
+                để nhận ưu đãi cho người mới.
+              </div>
+            </div>
+          `;
+        }
+      }
+
+      function restart() {
+        state.step = 0;
+        state.scores = { bond: 0, balanced: 0, stock: 0 };
+        render();
+      }
+      window.restart = restart;
+
+      render();
+    </script>
+  </body>
+</html>

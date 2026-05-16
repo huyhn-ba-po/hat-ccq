@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>So sánh quỹ — Hạt — CCQ cho người mới</title>
+    <meta
+      name="description"
+      content="So sánh 2–3 quỹ mở cạnh nhau: NAV, hiệu suất, phí, công ty quản lý, holdings. Quyết định mua quỹ nào dễ hơn."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" type="image/svg+xml" href="./logo.svg" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="./partials.js" defer></script>
+  </head>
+  <body>
+    <div class="container">
+      <div id="site-nav"></div>
+
+      <section style="padding: 20px 0 30px">
+        <h1 style="font-size: 32px; margin: 0 0 10px; letter-spacing: -0.02em">
+          ⚖️ So sánh quỹ
+        </h1>
+        <p style="color: var(--text-2); font-size: 15px; max-width: 680px; line-height: 1.6">
+          Chọn 2–3 quỹ để so sánh cạnh nhau: hiệu suất, phí, NAV, top holdings. Tối đa 3
+          quỹ cùng lúc để dễ nhìn.
+        </p>
+      </section>
+
+      <div class="compare-shell">
+        <div class="compare-controls">
+          <select id="addSelect" class="select" style="min-width: 320px">
+            <option value="">+ Thêm quỹ để so sánh…</option>
+          </select>
+          <button class="btn btn-ghost" id="resetBtn">Reset</button>
+          <div style="margin-left: auto; color: var(--text-3); font-size: 12px">
+            <span id="selectedCount">0</span>/3 quỹ
+          </div>
+        </div>
+
+        <div class="compare-cards" id="cards"></div>
+
+        <div class="section" id="chartSection" style="display: none; margin-top: 20px">
+          <h3>So sánh hiệu suất NAV (chuẩn hoá về 100 tại điểm bắt đầu)</h3>
+          <div style="height: 380px; position: relative">
+            <canvas id="navCompareChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div id="site-footer"></div>
+    </div>
+
+    <script>
+      const FMT = new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 0 });
+      const PCT = new Intl.NumberFormat('vi-VN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      const COLORS = ['#7aa2ff', '#38d6c2', '#f5c451'];
+
+      const state = { all: [], selected: [], chart: null };
+
+      function fmtVnd(v) {
+        if (v == null) return '—';
+        return FMT.format(v);
+      }
+      function fmtPct(v) {
+        if (v == null) return '<span style="color:var(--text-3)">—</span>';
+        const cls = v > 0 ? 'pos' : v < 0 ? 'neg' : '';
+        const sign = v > 0 ? '+' : '';
+        return `<span class="${cls}">${sign}${PCT.format(v)}%</span>`;
+      }
+      function fmtMoney(v) {
+        if (v == null) return '—';
+        if (v >= 1e9) return FMT.format(v / 1e9) + ' tỷ';
+        if (v >= 1e6) return FMT.format(v / 1e6) + ' tr';
+        return FMT.format(v);
+      }
+
+      async function loadList() {
+        const data = await fetch('./data/funds.json?_=' + Date.now()).then((r) => r.json());
+        state.all = data.funds;
+        const sel = document.getElementById('addSelect');
+        state.all
+          .sort((a, b) => a.code.localeCompare(b.code))
+          .forEach((f) => {
+            const opt = document.createElement('option');
+            opt.value = f.code;
+            opt.textContent = `${f.code} · ${f.shortName || ''} · ${f.assetType || ''} · ${f.owner || ''}`;
+            sel.appendChild(opt);
+          });
+      }
+
+      async function addFund(code) {
+        if (state.selected.find((f) => f.code === code)) return;
+        if (state.selected.length >= 3) {
+          alert('Tối đa 3 quỹ cùng lúc. Bấm ✕ để bỏ quỹ trước.');
+          return;
+        }
+        const detail = await fetch(`./data/details/${code}.json?_=` + Date.now()).then((r) =>
+          r.json(),
+        );
+        const navHist = await fetch(`./data/nav-history/${code}.json?_=` + Date.now())
+          .then((r) => r.json())
+          .catch(() => ({ history: [] }));
+        state.selected.push({ ...detail, history: navHist.history });
+        render();
+      }
+
+      function removeFund(code) {
+        state.selected = state.selected.filter((f) => f.code !== code);
+        render();
+      }
+
+      function render() {
+        document.getElementById('selectedCount').textContent = state.selected.length;
+        const cards = document.getElementById('cards');
+        if (!state.selected.length) {
+          cards.innerHTML = `<div class="section" style="text-align:center; padding:40px; color:var(--text-3)">
+            Chọn 2–3 quỹ ở dropdown trên để bắt đầu so sánh.
+          </div>`;
+          document.getElementById('chartSection').style.display = 'none';
+          return;
+        }
+        cards.innerHTML = state.selected
+          .map((f) => {
+            const ch = f.productNavChange || {};
+            return `
+            <div class="compare-card">
+              <button class="remove" onclick="removeFund('${f.code}')">✕</button>
+              <div class="code">${f.code}</div>
+              <div class="name">${f.shortName || ''} · ${f.assetType?.name || ''}</div>
+              <div class="row"><span class="lbl">CTy quản lý</span><span class="val">${f.owner?.shortName || '—'}</span></div>
+              <div class="row"><span class="lbl">NAV/CCQ</span><span class="val">${fmtVnd(f.nav)}</span></div>
+              <div class="row"><span class="lbl">Phí QL/năm</span><span class="val">${f.managementFee != null ? PCT.format(f.managementFee) + '%' : '—'}</span></div>
+              <div class="row"><span class="lbl">Min mua</span><span class="val">${fmtMoney(f.buyMinValue)}</span></div>
+              <div class="row"><span class="lbl">T+x</span><span class="val">T+${f.completeTransactionDuration ?? '?'}</span></div>
+              <div class="row"><span class="lbl">Rủi ro</span><span class="val">${f.riskLevel?.name || '—'}</span></div>
+              <div class="row"><span class="lbl">1 tháng</span><span class="val">${fmtPct(ch.navTo1Months)}</span></div>
+              <div class="row"><span class="lbl">3 tháng</span><span class="val">${fmtPct(ch.navTo3Months)}</span></div>
+              <div class="row"><span class="lbl">6 tháng</span><span class="val">${fmtPct(ch.navTo6Months)}</span></div>
+              <div class="row"><span class="lbl">12 tháng</span><span class="val">${fmtPct(ch.navTo12Months)}</span></div>
+              <div class="row"><span class="lbl">36 tháng</span><span class="val">${fmtPct(ch.navTo36Months)}</span></div>
+              <div class="row"><span class="lbl">Từ thành lập</span><span class="val">${fmtPct(ch.navToBeginning)}</span></div>
+              <div style="margin-top: 14px">
+                <a class="btn btn-ghost" href="./fund.html?code=${f.code}" style="width:100%; justify-content:center">Chi tiết →</a>
+              </div>
+            </div>`;
+          })
+          .join('');
+
+        drawChart();
+      }
+
+      function drawChart() {
+        document.getElementById('chartSection').style.display =
+          state.selected.length >= 1 ? 'block' : 'none';
+        // Find common start date = max(of all first dates), limit to last 3 years
+        let cutoffMs = Date.now() - 3 * 365 * 86400 * 1000;
+        const series = state.selected.map((f, i) => {
+          const data = (f.history || []).filter(
+            (p) => new Date(p.d).getTime() >= cutoffMs,
+          );
+          if (!data.length) return null;
+          const base = data[0].v;
+          // Reduce density
+          const step = Math.max(1, Math.floor(data.length / 200));
+          const sampled = data.filter((_, idx) => idx % step === 0);
+          return {
+            label: f.code,
+            borderColor: COLORS[i],
+            backgroundColor: COLORS[i] + '20',
+            borderWidth: 2,
+            fill: false,
+            tension: 0.25,
+            pointRadius: 0,
+            pointHoverRadius: 4,
+            data: sampled.map((p) => ({ x: new Date(p.d).getTime(), y: +((p.v / base) * 100).toFixed(2) })),
+          };
+        }).filter(Boolean);
+
+        if (state.chart) state.chart.destroy();
+        const ctx = document.getElementById('navCompareChart').getContext('2d');
+        state.chart = new Chart(ctx, {
+          type: 'line',
+          data: { datasets: series },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+              legend: { labels: { color: '#97a3b6' } },
+              tooltip: {
+                backgroundColor: '#121925',
+                borderColor: '#2b3a52',
+                borderWidth: 1,
+                callbacks: {
+                  label: (c) => c.dataset.label + ': ' + c.parsed.y + ' (base = 100)',
+                },
+              },
+            },
+            scales: {
+              x: {
+                type: 'time',
+                time: { unit: 'month', displayFormats: { month: 'MM/yy' } },
+                ticks: { color: '#5b6577', maxTicksLimit: 12 },
+                grid: { color: 'rgba(31, 42, 58, 0.6)' },
+              },
+              y: {
+                ticks: { color: '#5b6577' },
+                grid: { color: 'rgba(31, 42, 58, 0.6)' },
+              },
+            },
+          },
+        });
+      }
+
+      document.getElementById('addSelect').addEventListener('change', (e) => {
+        if (e.target.value) {
+          addFund(e.target.value);
+          e.target.value = '';
+        }
+      });
+      document.getElementById('resetBtn').addEventListener('click', () => {
+        state.selected = [];
+        render();
+      });
+
+      // Need date adapter for chart.js time axis - load chartjs-adapter-date-fns
+      const adapter = document.createElement('script');
+      adapter.src =
+        'https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js';
+      adapter.onload = () => {
+        loadList().then(() => {
+          // Pre-load 2 popular funds for demo
+          const params = new URLSearchParams(location.search);
+          const initCodes = params.get('codes')?.split(',') || ['VESAF', 'DCBC', 'MAFF'];
+          initCodes.forEach((c) => addFund(c.trim()));
+        });
+      };
+      document.head.appendChild(adapter);
+
+      render();
+    </script>
+  </body>
+</html>
