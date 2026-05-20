@@ -241,10 +241,12 @@ function renderFeeTable(fees) {
     });
   }
   return `
-    <table class="fee-table">
-      <thead><tr><th>Khoảng / thời gian</th><th>Phí</th><th>Chương trình</th></tr></thead>
-      <tbody>${rows.join('')}</tbody>
-    </table>`;
+    <div class="fee-table-wrap">
+      <table class="fee-table">
+        <thead><tr><th>Khoảng / thời gian</th><th>Phí</th><th>Chương trình</th></tr></thead>
+        <tbody>${rows.join('')}</tbody>
+      </table>
+    </div>`;
 }
 
 function drawChart(history) {

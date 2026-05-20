@@ -388,6 +388,8 @@ tbody td.l {
   border-radius: 14px;
   padding: 20px;
   margin-bottom: 16px;
+  min-width: 0;
+  overflow: hidden;
 }
 .section h3 {
   margin: 0 0 14px;
@@ -519,16 +521,23 @@ tbody td.l {
   font-variant-numeric: tabular-nums;
 }
 
+.fee-table-wrap {
+  overflow-x: auto;
+  margin: 0 -4px;
+}
 .fee-table {
   width: 100%;
+  min-width: 360px;
   border-collapse: collapse;
   font-size: 13px;
+  table-layout: auto;
 }
 .fee-table th,
 .fee-table td {
   padding: 8px 10px;
   text-align: right;
   border-bottom: 1px solid var(--border);
+  white-space: nowrap;
 }
 .fee-table th:first-child,
 .fee-table td:first-child {
