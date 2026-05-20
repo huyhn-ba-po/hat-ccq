@@ -419,8 +419,6 @@ tbody td.l {
 .kv dd {
   margin: 0;
   color: var(--text-1);
-  overflow-wrap: anywhere;
-  word-break: break-word;
   min-width: 0;
 }
 .kv dd a {
