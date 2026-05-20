@@ -1163,6 +1163,7 @@ tbody td.l {
   max-width: 720px;
   margin: 0 auto;
   padding: 20px 0;
+  min-width: 0;
 }
 .article-body .tag {
   display: inline-block;
@@ -1249,11 +1250,24 @@ tbody td.l {
 .article-body .callout b {
   color: var(--gold);
 }
+.article-body .table-scroll {
+  overflow-x: auto;
+  margin: 18px 0 24px;
+  max-width: 100%;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+.article-body .table-scroll table {
+  margin: 0 !important;
+  border: none;
+  min-width: 480px;
+}
 .article-body table {
   width: 100%;
   border-collapse: collapse;
   margin: 18px 0 24px;
   font-size: 14px;
+  table-layout: auto;
 }
 .article-body table th,
 .article-body table td {
