@@ -116,6 +116,7 @@ async function main() {
     <div class="section">
       <h3>Lịch sử NAV/CCQ</h3>
       <div class="chart-wrap"><canvas id="navChart"></canvas></div>
+      <div id="navChartNote" style="margin-top:8px; font-size:12px; color:var(--text-3); text-align:right"></div>
     </div>
 
     <div class="grid-2">
@@ -187,7 +188,7 @@ async function main() {
     </div>
   `;
 
-  drawChart(nav.history);
+  drawChart(nav.history, detail);
 }
 
 function renderBars(items, codeField, labelField) {
@@ -249,11 +250,27 @@ function renderFeeTable(fees) {
     </div>`;
 }
 
-function drawChart(history) {
+function drawChart(history, detail) {
   if (!history || !history.length) return;
+
   // Reduce density: take ~250 points max for nice rendering
   const step = Math.max(1, Math.floor(history.length / 250));
   const points = history.filter((_, i) => i % step === 0);
+
+  // Append current NAV as extra point if history is stale (>7 days behind today)
+  const lastDate = history[history.length - 1].d;
+  const today = new Date().toISOString().slice(0, 10);
+  const daysGap = Math.floor((new Date(today) - new Date(lastDate)) / 86400000);
+  const noteEl = document.getElementById('navChartNote');
+  if (daysGap > 7 && detail?.nav) {
+    points.push({ d: today, v: detail.nav });
+    if (noteEl) {
+      noteEl.innerHTML = `Lịch sử chi tiết từ Fmarket cập nhật đến <b>${lastDate}</b> · NAV hiện tại <b>${FMT_VND.format(detail.nav)} đ</b> (${daysGap} ngày sau)`;
+    }
+  } else if (noteEl) {
+    noteEl.innerHTML = `Cập nhật đến <b>${lastDate}</b>`;
+  }
+
   const ctx = document.getElementById('navChart').getContext('2d');
   const gradient = ctx.createLinearGradient(0, 0, 0, 380);
   gradient.addColorStop(0, 'rgba(122, 162, 255, 0.45)');
