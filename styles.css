@@ -399,12 +399,12 @@ tbody td.l {
 }
 .grid-2 {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 16px;
 }
 .grid-3 {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
   gap: 16px;
 }
 .kv {
@@ -422,8 +422,7 @@ tbody td.l {
   min-width: 0;
 }
 .kv dd a {
-  overflow-wrap: anywhere;
-  word-break: break-all;
+  overflow-wrap: break-word;
 }
 .perf-grid {
   display: grid;
